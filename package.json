@@ -1,0 +1,39 @@
+{
+  "name": "node_assignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha spec test/**/*.js ",
+    "nodemon": "nodemon --inspect --trace-warnings app.js",
+    "upDevelopment": "db-migrate --force-exit --config config/databaseDev.json -m migration -c 1 up",
+    "upsDevelopment": "db-migrate --force-exit --config config/databaseDev.json -m migration up",
+    "downDevelopment": "db-migrate --force-exit --config config/databaseDev.json -m migration -c 1 down",
+    "downsDevelopment": "db-migrate --force-exit --config config/databaseDev.json -m migration -c 500 down"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/delontoh/node_assignment.git"
+  },
+  "author": "delontoh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/delontoh/node_assignment/issues"
+  },
+  "homepage": "https://github.com/delontoh/node_assignment#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "chai-http": "^4.3.0",
+    "express": "^4.17.1",
+    "mocha": "^7.1.1",
+    "mysql": "^2.18.1",
+    "uuid": "^7.0.3"
+  },
+  "devDependencies": {
+    "db-migrate": "^0.11.6",
+    "db-migrate-mysql": "^2.1.1",
+    "nodemon": "^2.0.2"
+  }
+}

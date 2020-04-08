@@ -1,0 +1,15 @@
+{
+  "STUDENTS": {
+    "STATUS": {
+      "ACTIVE": "active",
+      "SUSPENDED": "suspended",
+      "INACTIVE": "inactive"
+    }
+  },
+  "TEACHERS": {
+    "STATUS": {
+      "ACTIVE": "active",
+      "INACTIVE": "inactive"
+    }
+  }
+}
