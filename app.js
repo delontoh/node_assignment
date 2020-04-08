@@ -29,6 +29,7 @@ db.connect((status, result) => {
 /**
  * Routes Definitions
  */
+// app.use('/', require('./api/index_test'));
 app.use('/', require('./api/index'));
 app.use('/dbconfig', require('./config/dbconfig'));
 app.use('/register', require('./api/register'));

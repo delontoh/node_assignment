@@ -1,10 +1,6 @@
 const mysql = require("mysql");
 const dbConfig = (process.env.NODE_ENV || 'development') === 'development' ? require('./databaseDev.json') : require('./database.json');
-const CURRENT_CONFIG = dbConfig[process.env.NODE_ENV || 'development'];
 let DB = module.exports;
-DB.CURRENT_CONFIG = {
-    database: CURRENT_CONFIG.database
-};
 
 DB.query = function(query, values, callback) {
     let isCalledBack = 0;
