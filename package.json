@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "mocha spec test/**/*.js ",
+    "test": "mocha test/**/*.js",
     "nodemon": "nodemon --inspect --trace-warnings app.js",
     "upDevelopment": "db-migrate --force-exit --config config/databaseDev.json -m migration -c 1 up",
     "upsDevelopment": "db-migrate --force-exit --config config/databaseDev.json -m migration up",
