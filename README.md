@@ -31,9 +31,11 @@ npm run nodemon
 
 ### API response example
 
-Protocol: HTTP
-Host: localhost
-Port: 3000
+```Protocol: HTTP```  
+
+```Host: localhost``` 
+
+```Port: 3000```
 
 Endpoint: GET http://localhost:3000/api/commonstudents
 
