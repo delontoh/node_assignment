@@ -31,11 +31,15 @@ npm run nodemon
 
 ### API response example
 
-Endpoint: GET /api/commonstudents
+Protocol: HTTP
+Host: localhost
+Port: 3000
+
+Endpoint: GET http://localhost:3000/api/commonstudents
 
 • Success response status: HTTP 200
 
-• Request example 1: GET /api/commonstudents?teacher=teacherken%40example.com
+• Request example 1: GET http://localhost:3000/api/commonstudents?teacher=teacherken%40gmail.com
 
 • Success response body 1:
 ```
