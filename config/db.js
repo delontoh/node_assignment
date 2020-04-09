@@ -25,10 +25,11 @@ DB.connect = function(callback) {
     var self = this;
     DB.con.connect(function (err) {
         if (err) {
-            console.log('Error connecting to Db');
+            console.log('Error connecting to database');
             callback(false);
+        } else {
+            callback(true, self.con);
         }
-        callback(true, self.con);
     })
 };
 
@@ -39,20 +40,20 @@ DB.disconnect = function(callback) {
     })
 };
 
-DB.handleDisconnect = (conn) => {
-    conn.on('error', function(err) {
-        if (!err.fatal) {
-            return;
-        }
-        if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
-            throw err;
-        }
-        console.log('Re-connecting lost connection: ' + err.stack);
-        DB.con = mysql.createConnection(conn.config);
-        DB.handleDisconnect(DB.con);
-        DB.con.connect();
-    });
-};
+// DB.handleDisconnect = (conn) => {
+//     conn.on('error', function(err) {
+//         if (!err.fatal) {
+//             return;
+//         }
+//         if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
+//             throw err;
+//         }
+//         console.log('Re-connecting lost connection: ' + err.stack);
+//         DB.con = mysql.createConnection(conn.config);
+//         DB.handleDisconnect(DB.con);
+//         DB.con.connect();
+//     });
+// };
 
 // connect to db settings
 DB.con = mysql.createConnection({
@@ -63,4 +64,4 @@ DB.con = mysql.createConnection({
     timezone: 'utc'
 });
 
-DB.handleDisconnect(DB.con);
+// DB.handleDisconnect(DB.con);

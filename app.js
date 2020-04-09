@@ -23,6 +23,8 @@ const db = require('./config/db');
 db.connect((status, result) => {
     if(status) {
         console.log('Connection to database established');
+    } else {
+        console.log('Please try connecting to database again...');
     }
 });
 
