@@ -32,10 +32,10 @@ db.connect((status, result) => {
 // app.use('/', require('./api/index_test'));
 app.use('/', require('./api/index'));
 app.use('/dbconfig', require('./config/dbconfig'));
-app.use('/register', require('./api/register'));
-app.use('/commonstudents', require('./api/students'));
-app.use('/suspend', require('./api/studentStatus'));
-app.use('/retrievefornotifications', require('./api/notifications'));
+app.use('/api/register', require('./api/register'));
+app.use('/api/commonstudents', require('./api/students'));
+app.use('/api/suspend', require('./api/studentStatus'));
+app.use('/api/retrievefornotifications', require('./api/notifications'));
 
 /**
  * Server Activation

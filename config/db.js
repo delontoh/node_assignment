@@ -6,7 +6,7 @@ DB.query = function(query, values, callback) {
     let isCalledBack = 0;
     setTimeout(() => {
         if (isCalledBack === 0) {
-            console.log(`req.storage.db.query: timeout`, {
+            console.log(`db.query: timeout`, {
                 query: query,
                 values: values ? JSON.stringify(values) : values
             });
@@ -28,7 +28,6 @@ DB.connect = function(callback) {
             console.log('Error connecting to Db');
             callback(false);
         }
-        // console.log('Connection established');
         callback(true, self.con);
     })
 };
@@ -63,4 +62,5 @@ DB.con = mysql.createConnection({
     database: dbConfig[process.env.NODE_ENV || 'development'].database,
     timezone: 'utc'
 });
+
 DB.handleDisconnect(DB.con);
