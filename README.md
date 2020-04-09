@@ -5,22 +5,22 @@ v8.16.2
 
 ### Setup
 
-Install node modules dependencies
+Install node modules dependencies:
 ```
 npm install
 ```
-Create new database in MySQL with database name:
 
-```
-node_mysql
-```
+Create new database in MySQL with database name: ```node_mysql```
 
-Run migration scripts to create tables in database
+Refer to ```databaseDev.json``` file for database configuration
+
+
+Run migration scripts to create tables in database:
 ```
 npm run upsDevelopment
 ```
 
-Start application
+Start application:
 ```
 npm run start
 ```
@@ -29,7 +29,7 @@ OR
 npm run nodemon
 ```
 
-### API Response example
+### API response example
 
 Endpoint: GET /api/commonstudents
 
