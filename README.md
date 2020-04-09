@@ -9,6 +9,11 @@ Install node modules dependencies
 ```
 npm install
 ```
+Create new database in MySQL with database name:
+
+```
+node_mysql
+```
 
 Run migration scripts to create tables in database
 ```
