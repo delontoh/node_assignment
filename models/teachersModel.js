@@ -22,7 +22,7 @@ teachersModel.getTeacherByEmail = async function(req, email) {
         let record = records[0];
         return record.dataValues;
     }).catch((err) => {
-        console.log(`${funcName}: Failed to retrieve record\n Error: ${err}`);
+        console.log(`${funcName}: Failed to retrieve teacher record\n Error: ${err}`);
     })
 }
 
@@ -49,6 +49,10 @@ teachersModel.addTeacherRecord = async function(req, email) {
         console.log(`${funcName}: Failed to create new teacher record\n Error: ${err}`);
     })
 }
+
+/*
+******************************* Non Sequelize Queries *******************************
+ */
 
 // /**
 //  * Get single teacher record by email

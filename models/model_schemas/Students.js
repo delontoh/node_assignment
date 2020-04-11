@@ -10,6 +10,7 @@ const Students = db.define('student', {
     student_id: {
         type: Sequelize.STRING,
         primaryKey: true,
+        allowNull: false
     },
     email: {
         type: Sequelize.STRING,
@@ -30,8 +31,7 @@ const Students = db.define('student', {
         type: Sequelize.STRING,
         allowNull: true,
         defaultValue: null,
-    },
-
+    }
 }, {
     createdAt: 'created_date',
     updatedAt: 'updated_date'
@@ -40,6 +40,8 @@ const Students = db.define('student', {
 /*
  Table association
  */
-// Students.belongsToMany(Teachers, {through: TeacherStudentRelation, foreignKey: 'student_fk'});
+// Students.associate = (models) => {
+//     Students.belongsToMany(Teachers, {through: TeacherStudentRelation, foreignKey: 'student_fk'});
+// }
 
 module.exports = Students;

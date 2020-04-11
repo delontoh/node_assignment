@@ -10,6 +10,7 @@ const TeacherStudentRelation = db.define('teacher_student_relation', {
     teacher_student_relation_id: {
         type: Sequelize.STRING,
         primaryKey: true,
+        allowNull: false
     },
     student_fk: {
         type: Sequelize.STRING,
@@ -38,8 +39,7 @@ const TeacherStudentRelation = db.define('teacher_student_relation', {
         type: Sequelize.STRING,
         allowNull: true,
         defaultValue: null,
-    },
-
+    }
 }, {
     createdAt: 'created_date',
     updatedAt: 'updated_date',
@@ -49,7 +49,11 @@ const TeacherStudentRelation = db.define('teacher_student_relation', {
 /*
  Table association
  */
-Teachers.belongsToMany(Students, {through: TeacherStudentRelation});
-Students.belongsToMany(Teachers, {through: TeacherStudentRelation});
+// Teachers.belongsToMany(Students, {through: TeacherStudentRelation, foreignKey: 'teacher_fk'});
+// Students.belongsToMany(Teachers, {through: TeacherStudentRelation, foreignKey: 'student_fk'});
+// TeacherStudentRelation.associate = (models) => {
+//     TeacherStudentRelation.belongsTo(Teachers, {foreignKey: 'teacher_fk'});
+//     TeacherStudentRelation.belongsTo(Students, {foreignKey: 'student_fk'});
+// }
 
 module.exports = TeacherStudentRelation;

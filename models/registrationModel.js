@@ -24,7 +24,7 @@ registrationModel.createTeacherStudentsRelation = async function (req, student_i
     }).then((newRelation) => {
         return newRelation.dataValues
     }).catch((err) => {
-        console.log(`${funcName}: Failed to create new teacher record\n Error: ${err}`);
+        console.log(`${funcName}: Failed to create new teacher student relation record\n Error: ${err}`);
     })
 }
 
@@ -46,9 +46,8 @@ registrationModel.getTeacherAndStudentRelation = async function (req, teacher_id
         let record = records[0];
         return record.dataValues;
     }).catch((err) => {
-        console.log(`${funcName}: Failed to retrieve record\n Error: ${err}`);
+        console.log(`${funcName}: Failed to retrieve teacher student relation record\n Error: ${err}`);
     })
-    console.log('registration model', result)
     // returns true if result is not empty
     if(!isEmpty(result)) {
         return true;
@@ -56,6 +55,10 @@ registrationModel.getTeacherAndStudentRelation = async function (req, teacher_id
         return false;
     }
 }
+
+/*
+******************************* Non Sequelize Queries *******************************
+ */
 
 // /**
 //  *
