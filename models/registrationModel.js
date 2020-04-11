@@ -1,5 +1,6 @@
 const registrationModel = module.exports;
-const databasHelper = require('../helpers/databaseHelper');
+// const databasHelper = require('../helpers/databaseHelper');
+const TeacherStudentRelation = require('./model_schemas/TeacherStudentRelation');
 const generalHelper = require('../helpers/generalHelper');
 let { isEmpty, generateId } = generalHelper;
 
@@ -11,13 +12,20 @@ let { isEmpty, generateId } = generalHelper;
  * @returns {Promise<*>}
  */
 registrationModel.createTeacherStudentsRelation = async function (req, student_id, teacher_id) {
+    const funcName = 'registrationModel.createTeacherStudentsRelation';
     if(isEmpty(student_id) || isEmpty(teacher_id)) {
         return [];
     }
-    let tableName = 'teacher_student_relation';
     let teacher_student_relation_id = generateId();
-    let sql = `INSERT INTO ${tableName} (teacher_student_relation_id, teacher_fk, student_fk) VALUES(?, ?, ?)`;
-    return await databasHelper.query(req, sql, [teacher_student_relation_id, teacher_id, student_id]);
+    await TeacherStudentRelation.create({
+        teacher_student_relation_id: teacher_student_relation_id,
+        student_fk: student_id,
+        teacher_fk: teacher_id
+    }).then((newRelation) => {
+        return newRelation.dataValues
+    }).catch((err) => {
+        console.log(`${funcName}: Failed to create new teacher record\n Error: ${err}`);
+    })
 }
 
 /**
@@ -28,17 +36,63 @@ registrationModel.createTeacherStudentsRelation = async function (req, student_i
  * @returns {Promise<boolean>} Returns true if record is found
  */
 registrationModel.getTeacherAndStudentRelation = async function (req, teacher_id, student_id) {
+    const funcName = 'registrationModel.getTeacherAndStudentRelation';
     if(isEmpty(student_id) || isEmpty(teacher_id)) {
         return false;
     }
-    let tableName = 'teacher_student_relation';
-    let sql = `SELECT teacher_student_relation_id 
-               FROM ${tableName} 
-               WHERE teacher_fk = ? AND student_fk = ?`;
-    let result = await databasHelper.query(req, sql, [teacher_id, student_id]);
+    let result = await TeacherStudentRelation.findAll({
+        where: { teacher_fk: teacher_id,  student_fk: student_id}
+    }).then((records) => {
+        let record = records[0];
+        return record.dataValues;
+    }).catch((err) => {
+        console.log(`${funcName}: Failed to retrieve record\n Error: ${err}`);
+    })
+    console.log('registration model', result)
+    // returns true if result is not empty
     if(!isEmpty(result)) {
         return true;
     } else {
         return false;
     }
 }
+
+// /**
+//  *
+//  * @param {*} req
+//  * @param {string} student_id
+//  * @param {string} teacher_id
+//  * @returns {Promise<*>}
+//  */
+// registrationModel.createTeacherStudentsRelation = async function (req, student_id, teacher_id) {
+//     if(isEmpty(student_id) || isEmpty(teacher_id)) {
+//         return [];
+//     }
+//     let tableName = 'teacher_student_relation';
+//     let teacher_student_relation_id = generateId();
+//     let sql = `INSERT INTO ${tableName} (teacher_student_relation_id, teacher_fk, student_fk) VALUES(?, ?, ?)`;
+//     return await databasHelper.query(req, sql, [teacher_student_relation_id, teacher_id, student_id]);
+// }
+
+// /**
+//  * Get teacher and student relation record by their ids
+//  * @param {*} req
+//  * @param {string} teacher_id
+//  * @param {string} student_id
+//  * @returns {Promise<boolean>} Returns true if record is found
+//  */
+// registrationModel.getTeacherAndStudentRelation = async function (req, teacher_id, student_id) {
+//     if(isEmpty(student_id) || isEmpty(teacher_id)) {
+//         return false;
+//     }
+//     let tableName = 'teacher_student_relation';
+//     let sql = `SELECT teacher_student_relation_id
+//                FROM ${tableName}
+//                WHERE teacher_fk = ? AND student_fk = ?`;
+//     let result = await databasHelper.query(req, sql, [teacher_id, student_id]);
+//     if(!isEmpty(result)) {
+//         return true;
+//     } else {
+//         return false;
+//     }
+// }

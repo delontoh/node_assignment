@@ -20,13 +20,20 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
  * Connect to DB
  */
 const db = require('./config/db');
-db.connect((status, result) => {
-    if(status) {
+db.authenticate()
+    .then(() => {
         console.log('Connection to database established');
-    } else {
-        console.log('Please try connecting to database again...');
-    }
-});
+    })
+    .catch((err) => {
+        console.log(`Please try connecting to database again...\n Error: ${err}`);
+    })
+// db.connect((status, result) => {
+//     if(status) {
+//         console.log('Connection to database established');
+//     } else {
+//         console.log('Please try connecting to database again...');
+//     }
+// });
 
 /**
  * Routes Definitions

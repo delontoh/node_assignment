@@ -1,44 +1,59 @@
-const mysql = require("mysql");
+// const mysql = require("mysql");
+// let DB = module.exports;
+const Sequelize = require('sequelize');
 const dbConfig = (process.env.NODE_ENV || 'development') === 'development' ? require('./databaseDev.json') : require('./database.json');
-let DB = module.exports;
 
-DB.query = function(query, values, callback) {
-    let isCalledBack = 0;
-    setTimeout(() => {
-        if (isCalledBack === 0) {
-            console.log(`db.query: timeout`, {
-                query: query,
-                values: values ? JSON.stringify(values) : values
-            });
-        }
-    }, 10000);
-    DB.con.query(query, values, function (err, rows) {
-        if (err) console.log('db.query', err ? JSON.stringify(err) : err);
-        rows = rows ? JSON.parse(JSON.stringify(rows)) : [];
-        isCalledBack = 1;
-        callback(err, rows, this.sql);
-    });
-};
+module.exports = new Sequelize(
+    dbConfig[process.env.NODE_ENV || 'development'].database,
+    dbConfig[process.env.NODE_ENV || 'development'].user,
+    dbConfig[process.env.NODE_ENV || 'development'].password, {
+    host: dbConfig[process.env.NODE_ENV || 'development'].host,
+    dialect: 'mysql',
+    pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+    }
+});
 
-// connect to database
-DB.connect = function(callback) {
-    var self = this;
-    DB.con.connect(function (err) {
-        if (err) {
-            console.log('Error connecting to database');
-            callback(false);
-        } else {
-            callback(true, self.con);
-        }
-    })
-};
+// DB.query = function(query, values, callback) {
+//     let isCalledBack = 0;
+//     setTimeout(() => {
+//         if (isCalledBack === 0) {
+//             console.log(`db.query: timeout`, {
+//                 query: query,
+//                 values: values ? JSON.stringify(values) : values
+//             });
+//         }
+//     }, 10000);
+//     DB.con.query(query, values, function (err, rows) {
+//         if (err) console.log('db.query', err ? JSON.stringify(err) : err);
+//         rows = rows ? JSON.parse(JSON.stringify(rows)) : [];
+//         isCalledBack = 1;
+//         callback(err, rows, this.sql);
+//     });
+// };
+//
+// // connect to database
+// DB.connect = function(callback) {
+//     var self = this;
+//     DB.con.connect(function (err) {
+//         if (err) {
+//             console.log('Error connecting to database');
+//             callback(false);
+//         } else {
+//             callback(true, self.con);
+//         }
+//     })
+// };
 
-// disconnect from database
-DB.disconnect = function(callback) {
-    DB.con.end(function (err) {
-        callback();
-    })
-};
+// // disconnect from database
+// DB.disconnect = function(callback) {
+//     DB.con.end(function (err) {
+//         callback();
+//     })
+// };
 
 // DB.handleDisconnect = (conn) => {
 //     conn.on('error', function(err) {
@@ -55,13 +70,13 @@ DB.disconnect = function(callback) {
 //     });
 // };
 
-// connect to db settings
-DB.con = mysql.createConnection({
-    host: dbConfig[process.env.NODE_ENV || 'development'].host,
-    user: dbConfig[process.env.NODE_ENV || 'development'].user,
-    password: dbConfig[process.env.NODE_ENV || 'development'].password,
-    database: dbConfig[process.env.NODE_ENV || 'development'].database,
-    timezone: 'utc'
-});
+// // connect to db settings
+// DB.con = mysql.createConnection({
+//     host: dbConfig[process.env.NODE_ENV || 'development'].host,
+//     user: dbConfig[process.env.NODE_ENV || 'development'].user,
+//     password: dbConfig[process.env.NODE_ENV || 'development'].password,
+//     database: dbConfig[process.env.NODE_ENV || 'development'].database,
+//     timezone: 'utc'
+// });
 
 // DB.handleDisconnect(DB.con);
