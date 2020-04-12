@@ -1,11 +1,15 @@
 const studentsModel = module.exports;
 // const databasHelper = require('../helpers/databaseHelper');
-const Students = require('./model_schemas/Students');
-const Teachers = require('./model_schemas/Teachers');
-const TeacherStudentRelation = require('./model_schemas/TeacherStudentRelation');
 const generalHelper = require('../helpers/generalHelper');
 const constant = require('../config/constant');
 let { isEmpty, generateId } = generalHelper;
+
+const db = require('../config/db');
+const ModelSchema = require('./model_schemas/index');
+const Teachers = ModelSchema.Teachers;
+const Students = ModelSchema.Students;
+const TeacherStudentRelation = ModelSchema.TeacherStudentRelation;
+const { QueryTypes } = require('sequelize');
 
 /**
  * Get single student record by email
@@ -14,18 +18,14 @@ let { isEmpty, generateId } = generalHelper;
  * @returns {Promise<*>}
  */
 studentsModel.getStudentByEmail = async function (req, email) {
-    const funcName = 'studentsModel.getStudentByEmail';
     if(isEmpty(email)) {
         return [];
     }
-    await Students.findAll({
+    let records = await Students.findAll({
         where: { email: email }
-    }).then((records) => {
-        let record = records[0];
-        return record.dataValues;
-    }).catch((err) => {
-        console.log(`${funcName}: Failed to retrieve record\n Error: ${err}`);
-    })
+    });
+    let getStudent = records.length > 0 ? records[0] : {};
+    return getStudent.dataValues ? getStudent.dataValues : getStudent;
 }
 
 /**
@@ -35,25 +35,24 @@ studentsModel.getStudentByEmail = async function (req, email) {
  * @returns {Promise<*>}
  */
 studentsModel.getStudentsDataByTeacherEmail = async function (req, email) {
-    const funcName = 'studentsModel.getStudentsDataByTeacherEmail';
-    if(!email) {s
+    if(!email) {
         return [];
     }
-    let records = await Teachers.findAll({
-        where: {email: email},
-        include: {
-            model: Students
-        }
-        // attributes: ['email'],
-        // group: 'email'
-    }).then((records) => {
-        console.log('records= >>', records)
-        // let record = records[0];
-        // console.log('record =>>', record)
-        // return record.dataValues;
-    }).catch((err) => {
-        console.log(`${funcName}: Failed to retrieve record\n Error: ${err}`);
-    })
+    // let records = await Students.findAll({
+    //     where: {email: email},
+    //     include: {
+    //         model: [Teachers, TeacherStudentRelation]
+    //     },
+    //     attributes: ['email'],
+    //     group: 'email'
+    // })
+    let records = await db.query(
+        `SELECT s.email AS email, s.status AS status FROM teacher_student_relation tsr
+         INNER JOIN students s ON tsr.student_fk = s.student_id
+         INNER JOIN teachers t ON tsr.teacher_fk = t.teacher_id
+         WHERE t.email IN ('${email}')
+         GROUP BY s.email;`,
+        { type: QueryTypes.SELECT });
     return records;
 }
 
@@ -63,17 +62,26 @@ studentsModel.getStudentsDataByTeacherEmail = async function (req, email) {
  * @param {array} teacherEmails
  * @returns {Promise<*>}
  */
-// studentsModel.getCommonStudentsByTeacherEmails = async function (req, teacherEmails) {
-//     if(isEmpty(teacherEmails)) {
-//         return [];
-//     }
-//     let sql = `SELECT s.email AS student FROM teacher_student_relation tsr
-//                 INNER JOIN students s ON tsr.student_fk = s.student_id
-//                 INNER JOIN teachers t ON tsr.teacher_fk = t.teacher_id
-//                 WHERE t.email IN (?)
-//                 GROUP BY s.email;`;
-//     return await databasHelper.query(req, sql, [teacherEmails]);
-// }
+studentsModel.getCommonStudentsByTeacherEmails = async function (req, teacherEmails) {
+    if(isEmpty(teacherEmails)) {
+        return [];
+    }
+    let formatEmails;
+    //Formats emails for query
+    if(Array.isArray(teacherEmails) && teacherEmails.length > 0) {
+        formatEmails =  "'" + teacherEmails.join("','") + "'";
+    } else {
+        formatEmails = "'" + teacherEmails + "'";
+    }
+    let records = await db.query(
+        `SELECT s.email AS student FROM teacher_student_relation tsr
+                INNER JOIN students s ON tsr.student_fk = s.student_id
+                INNER JOIN teachers t ON tsr.teacher_fk = t.teacher_id
+                WHERE t.email IN (${formatEmails})
+                GROUP BY s.email;`,
+        { type: QueryTypes.SELECT });
+    return records;
+}
 
 /**
  * Add new student record
@@ -82,21 +90,17 @@ studentsModel.getStudentsDataByTeacherEmail = async function (req, email) {
  * @returns {Promise<*>}
  */
 studentsModel.addStudentRecord = async function (req, email) {
-    const funcName = 'studentsModel.addStudentRecord';
     if(isEmpty(email)) {
         return [];
     }
     let student_id = generateId();
     let status = constant.STUDENTS.STATUS.ACTIVE;
-    await Students.create({
+    let newStudent = await Students.create({
         student_id: student_id,
         email: email,
         status: status
-    }).then((newStudent) => {
-        return newStudent.dataValues
-    }).catch((err) => {
-        console.log(`${funcName}: Failed to create new student record\n Error: ${err}`);
-    })
+    });
+    return newStudent.dataValues ? newStudent.dataValues : newStudent;
 }
 
 /**
@@ -107,17 +111,10 @@ studentsModel.addStudentRecord = async function (req, email) {
  * @returns {Promise<*>}
  */
 studentsModel.updateStudentStatus = async function (req, studentEmail, studentStatus) {
-    const funcName = 'studentsModel.updateStudentStatus';
     if(isEmpty(studentEmail) || isEmpty(studentStatus)) {
         return [];
     }
-    await Students.update({
-        status: studentStatus
-    }, {
-        where: {email: studentEmail}
-    }).catch((err) => {
-        console.log(`${funcName}: Failed to update student status record\n Error: ${err}`);
-    })
+    return await Students.update({status: studentStatus}, {where: {email: studentEmail}});
 }
 
 /*

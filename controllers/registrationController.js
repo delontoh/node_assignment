@@ -85,7 +85,7 @@ registrationController.createTeacherStudentsRelation = async function (req, teac
             isExistingRelation = await registrationController.getTeacherAndStudentRelation(req, teacherId, student_id);
         }
         catch(err) {
-            console.log(`${funcName}: Failed to retrieve teacher student relation record`);
+            console.log(`${funcName}: Failed to retrieve teacher student relation record\n Error: ${err}`);
         }
         // create record only when there is no existing one
         if(cmpBool(isExistingRelation, false)) {
@@ -95,7 +95,7 @@ registrationController.createTeacherStudentsRelation = async function (req, teac
     // allow Promises to continue even when one record creation fails
     let allPromises = await Promise.all(createRecords.map((createRecord) => {
         createRecord.catch((err) => {
-            console.log(`${funcName}: Failed to create a teacher student relation record \n Error: ${err}`);
+            console.log(`${funcName}: Failed to create a teacher student relation record\n Error: ${err}`);
         })
     }));
     return allPromises;

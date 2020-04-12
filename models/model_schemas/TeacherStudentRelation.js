@@ -51,9 +51,5 @@ const TeacherStudentRelation = db.define('teacher_student_relation', {
  */
 // Teachers.belongsToMany(Students, {through: TeacherStudentRelation, foreignKey: 'teacher_fk'});
 // Students.belongsToMany(Teachers, {through: TeacherStudentRelation, foreignKey: 'student_fk'});
-// TeacherStudentRelation.associate = (models) => {
-//     TeacherStudentRelation.belongsTo(Teachers, {foreignKey: 'teacher_fk'});
-//     TeacherStudentRelation.belongsTo(Students, {foreignKey: 'student_fk'});
-// }
 
 module.exports = TeacherStudentRelation;

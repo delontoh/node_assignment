@@ -53,12 +53,13 @@ describe('*** Teachers Controller ***', () => {
             expect(result).to.have.property('updated_date');
         });
 
-        it('Test with non existing teacherEmail >>> Expect return undefined', async () => {
+        it('Test with non existing teacherEmail >>> Expect return empty object', async () => {
             const req = '';
             const newId = generateId();
             const teacherEmail = `${newId}@teacher.com`;
             let result = await teachersController.getTeacherByEmail(req, teacherEmail);
-            expect(result).to.be.undefined;
+            expect(result).to.be.an('object');
+            expect(result).to.be.empty;
         });
     });
 

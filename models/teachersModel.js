@@ -1,9 +1,10 @@
 const teachersModel = module.exports;
 // const databasHelper = require('../helpers/databaseHelper');
-const Teachers = require('./model_schemas/Teachers');
 const generalHelper = require('../helpers/generalHelper');
 const constant = require('../config/constant');
 let { isEmpty, generateId } = generalHelper;
+const ModelSchema = require('./model_schemas/index');
+const Teachers = ModelSchema.Teachers;
 
 /**
  * Get single teacher record by email
@@ -12,18 +13,12 @@ let { isEmpty, generateId } = generalHelper;
  * @returns {Promise<*>}
  */
 teachersModel.getTeacherByEmail = async function(req, email) {
-    const funcName = 'teachersModel.getTeacherByEmail';
     if(isEmpty(email)) {
         return [];
     }
-    await Teachers.findAll({
-        where: { email: email }
-    }).then((records) => {
-        let record = records[0];
-        return record.dataValues;
-    }).catch((err) => {
-        console.log(`${funcName}: Failed to retrieve teacher record\n Error: ${err}`);
-    })
+    let records = await Teachers.findAll({where: { email: email }});
+    let getTeacher = records.length > 0 ? records[0] : {};
+    return getTeacher.dataValues ? getTeacher.dataValues : getTeacher;
 }
 
 /**
@@ -33,21 +28,17 @@ teachersModel.getTeacherByEmail = async function(req, email) {
  * @returns {Promise<*>}
  */
 teachersModel.addTeacherRecord = async function(req, email) {
-    const funcName = 'teachersModel.addTeacherRecord';
     if(isEmpty(email)) {
         return [];
     }
     let teacher_id = generateId();
     let status = constant.TEACHERS.STATUS.ACTIVE;
-    await Teachers.create({
+    let newTeacher = await Teachers.create({
         teacher_id: teacher_id,
         email: email,
         status: status
-    }).then((newTeacher) => {
-        return newTeacher.dataValues
-    }).catch((err) => {
-        console.log(`${funcName}: Failed to create new teacher record\n Error: ${err}`);
-    })
+    });
+    return newTeacher.dataValues ? newTeacher.dataValues : newTeacher;
 }
 
 /*

@@ -1,8 +1,9 @@
 const registrationModel = module.exports;
 // const databasHelper = require('../helpers/databaseHelper');
-const TeacherStudentRelation = require('./model_schemas/TeacherStudentRelation');
 const generalHelper = require('../helpers/generalHelper');
 let { isEmpty, generateId } = generalHelper;
+const ModelSchema = require('./model_schemas/index');
+const TeacherStudentRelation = ModelSchema.TeacherStudentRelation;
 
 /**
  *
@@ -12,20 +13,16 @@ let { isEmpty, generateId } = generalHelper;
  * @returns {Promise<*>}
  */
 registrationModel.createTeacherStudentsRelation = async function (req, student_id, teacher_id) {
-    const funcName = 'registrationModel.createTeacherStudentsRelation';
     if(isEmpty(student_id) || isEmpty(teacher_id)) {
         return [];
     }
     let teacher_student_relation_id = generateId();
-    await TeacherStudentRelation.create({
+    let newRelation = await TeacherStudentRelation.create({
         teacher_student_relation_id: teacher_student_relation_id,
         student_fk: student_id,
         teacher_fk: teacher_id
-    }).then((newRelation) => {
-        return newRelation.dataValues
-    }).catch((err) => {
-        console.log(`${funcName}: Failed to create new teacher student relation record\n Error: ${err}`);
-    })
+    });
+    return newRelation.dataValues ? newRelation.dataValues : newRelation;
 }
 
 /**
@@ -36,18 +33,11 @@ registrationModel.createTeacherStudentsRelation = async function (req, student_i
  * @returns {Promise<boolean>} Returns true if record is found
  */
 registrationModel.getTeacherAndStudentRelation = async function (req, teacher_id, student_id) {
-    const funcName = 'registrationModel.getTeacherAndStudentRelation';
     if(isEmpty(student_id) || isEmpty(teacher_id)) {
         return false;
     }
-    let result = await TeacherStudentRelation.findAll({
-        where: { teacher_fk: teacher_id,  student_fk: student_id}
-    }).then((records) => {
-        let record = records[0];
-        return record.dataValues;
-    }).catch((err) => {
-        console.log(`${funcName}: Failed to retrieve teacher student relation record\n Error: ${err}`);
-    })
+    let result = await TeacherStudentRelation.findAll({where: { teacher_fk: teacher_id,  student_fk: student_id}});
+    result = result.length > 0 ? result[0] : [];
     // returns true if result is not empty
     if(!isEmpty(result)) {
         return true;

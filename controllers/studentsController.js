@@ -25,7 +25,7 @@ studentsController.addNewStudents = async function (req, studentEmails) {
         });
         let allPromises = await Promise.all(newStudents.map((newStudent) => {
             newStudent.catch((err) => {
-                console.log(`${funcName}: Failed to create new student record \n Error: ${err}`);
+                console.log(`${funcName}: Failed to create new student record\n Error: ${err}`);
             })
         }));
         return allPromises;

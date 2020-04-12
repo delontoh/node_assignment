@@ -3,7 +3,7 @@ const chaiAsPromised = require('chai-as-promised');
 const expect = chai.expect;
 chai.use(chaiAsPromised);
 const studentsController = require('../../controllers/studentsController');
-const { generateId } = require('../../helpers/generalHelper');
+const { generateId, isEmpty } = require('../../helpers/generalHelper');
 const constants = require('../../config/constant');
 
 describe('*** Students Controller ***', () => {
@@ -73,12 +73,13 @@ describe('*** Students Controller ***', () => {
             expect(result).to.have.property('updated_date');
         });
 
-        it('Test with non existing studentEmail >>> Expect return undefined', async () => {
+        it('Test with non existing studentEmail >>> Expect return empty object', async () => {
             const req = '';
             const newId = generateId();
             const studentEmail = `${newId}@student.com`;
             let result = await studentsController.getStudentByEmail(req, studentEmail);
-            expect(result).to.be.undefined;
+            expect(result).to.be.an('object');
+            expect(result).to.be.empty;
         });
     });
 
@@ -104,7 +105,9 @@ describe('*** Students Controller ***', () => {
             const studentEmails = [`${newId}@student.com`, 'studentrebecca@example.com'];
             let result = await studentsController.getStudentsByEmails(req, studentEmails);
             let filteredResult = result.filter((studentEmails) => {
-                return studentEmails !== undefined;
+                if(isEmpty(studentEmails)) {
+                    return studentEmails;
+                };
             })
             expect(result).to.be.an('array');
             expect(result).to.have.length(studentEmails.length);
@@ -230,7 +233,7 @@ describe('*** Students Controller ***', () => {
             const studentEmail = 'studentrebecca@gmail.com';
             const studentStatus = constants.STUDENTS.STATUS.SUSPENDED;
             let results = await studentsController.updateStudentStatus(req, studentEmail, studentStatus);
-            expect(results).to.be.an('object');
+            expect(results).to.be.an('array');
         });
     });
 

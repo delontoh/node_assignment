@@ -40,8 +40,6 @@ const Students = db.define('student', {
 /*
  Table association
  */
-// Students.associate = (models) => {
-//     Students.belongsToMany(Teachers, {through: TeacherStudentRelation, foreignKey: 'student_fk'});
-// }
+// Students.belongsToMany(Teachers, {through: TeacherStudentRelation, foreignKey: 'student_fk'});
 
 module.exports = Students;
