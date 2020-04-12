@@ -13,11 +13,11 @@ describe('*** Student Status API ***', () => [
     /**
      * Test POST route
      */
-    describe('POST /suspend', () => {
+    describe('POST /api/suspend', () => {
         it("Test body request without teacher param >>> It should give status: 500", (done) => {
             const body = {};
             chai.request(app)
-                .post('/suspend')
+                .post('/api/suspend')
                 .send(body)
                 .end((err, response) => {
                     response.body.should.have.status(500)
@@ -30,7 +30,7 @@ describe('*** Student Status API ***', () => [
                 teacher: "teacherken@example.com",
             };
             chai.request(app)
-                .post('/suspend')
+                .post('/api/suspend')
                 .send(body)
                 .end((err, response) => {
                     response.body.should.have.status(500)
@@ -43,7 +43,7 @@ describe('*** Student Status API ***', () => [
                 student: "",
             };
             chai.request(app)
-                .post('/suspend')
+                .post('/api/suspend')
                 .send(body)
                 .end((err, response) => {
                     response.body.should.have.status(500)
@@ -56,7 +56,7 @@ describe('*** Student Status API ***', () => [
                 student: "studentrebecca@example.com"
             };
             chai.request(app)
-                .post('/suspend')
+                .post('/api/suspend')
                 .send(body)
                 .end((err, response) => {
                     response.status.should.eql(204);

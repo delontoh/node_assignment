@@ -13,11 +13,11 @@ describe('*** Register API ***', () => [
     /**
      * Test POST route
      */
-    describe('POST /register', () => {
+    describe('POST /api/register', () => {
         it("Test with empty body request >>> It should give status: 500", (done) => {
             const body = {};
             chai.request(app)
-                .post('/register')
+                .post('/api/register')
                 .send(body)
                 .end((err, response) => {
                     response.body.should.have.status(500)
@@ -30,7 +30,7 @@ describe('*** Register API ***', () => [
                 students: ["studentjon@example.com", "studenthon@example.com" ]
             };
             chai.request(app)
-                .post('/register')
+                .post('/api/register')
                 .send(body)
                 .end((err, response) => {
                     response.body.should.have.status(500)
@@ -43,7 +43,7 @@ describe('*** Register API ***', () => [
                 teacher: "teacherken@gmail.com",
             };
             chai.request(app)
-                .post('/register')
+                .post('/api/register')
                 .send(body)
                 .end((err, response) => {
                     response.body.should.have.status(500)
@@ -56,7 +56,7 @@ describe('*** Register API ***', () => [
                 students: ["studentjon@example.com", "studenthon@example.com" ]
             };
             chai.request(app)
-                .post('/register')
+                .post('/api/register')
                 .send(body)
                 .end((err, response) => {
                     response.status.should.eql(204);

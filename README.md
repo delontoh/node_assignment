@@ -12,7 +12,7 @@ npm install
 
 Create new database in MySQL with database name: ```node_mysql```
 
-Refer to ```databaseDev.json``` file for database configuration
+Refer to ```/config/databaseDev.json``` file for database configuration
 
 
 Run migration scripts to create tables in database:

@@ -13,13 +13,13 @@ describe('*** Notification API ***', () => [
     /**
      * Test POST route
      */
-    describe('POST /retrievefornotifications', () => {
+    describe('POST /api/retrievefornotifications', () => {
         it("Test body request without teacher param >>> It should give status: 500", (done) => {
             const body = {
                 notification: "Hello students! @studentagnes@example.com @studentmiche@example.com"
             };
             chai.request(app)
-                .post('/retrievefornotifications')
+                .post('/api/retrievefornotifications')
                 .send(body)
                 .end((err, response) => {
                     response.body.should.have.status(500)
@@ -32,7 +32,7 @@ describe('*** Notification API ***', () => [
                 teacher: "teacherdelontoh@example.com",
             };
             chai.request(app)
-                .post('/retrievefornotifications')
+                .post('/api/retrievefornotifications')
                 .send(body)
                 .end((err, response) => {
                     response.body.should.have.status(500)
@@ -46,7 +46,7 @@ describe('*** Notification API ***', () => [
                 notification: "Hello students! @studentsilverash@example.com @studentrebeccae@example.com"
             };
             chai.request(app)
-                .post('/retrievefornotifications')
+                .post('/api/retrievefornotifications')
                 .send(body)
                 .end((err, response) => {
                     response.body.should.have.status(200);
@@ -62,7 +62,7 @@ describe('*** Notification API ***', () => [
                 notification: "Hello students!"
             };
             chai.request(app)
-                .post('/retrievefornotifications')
+                .post('/api/retrievefornotifications')
                 .send(body)
                 .end((err, response) => {
                     response.body.should.have.status(200);

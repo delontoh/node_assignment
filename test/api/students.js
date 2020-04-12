@@ -13,11 +13,11 @@ describe('*** Students API ***', () => [
     /**
      * Test GET route
      */
-    describe('GET /commonstudents', () => {
+    describe('GET /api/commonstudents', () => {
         it("Test with empty query request >>> It should give status: 500", (done) => {
             const query = {};
             chai.request(app)
-                .get('/commonstudents')
+                .get('/api/commonstudents')
                 .query(query)
                 .end((err, response) => {
                     response.body.should.have.status(500);
@@ -30,7 +30,7 @@ describe('*** Students API ***', () => [
                 student: "studentrebecca@example.com",
             };
             chai.request(app)
-                .get('/commonstudents')
+                .get('/api/commonstudents')
                 .query(query)
                 .end((err, response) => {
                     response.body.should.have.status(500)
@@ -42,7 +42,7 @@ describe('*** Students API ***', () => [
                 teacher: "",
             };
             chai.request(app)
-                .get('/commonstudents')
+                .get('/api/commonstudents')
                 .query(query)
                 .end((err, response) => {
                     response.body.should.have.status(500);
@@ -54,7 +54,7 @@ describe('*** Students API ***', () => [
                 teacher: "teacherdelontoh@gmail.com",
             };
             chai.request(app)
-                .get('/commonstudents')
+                .get('/api/commonstudents')
                 .query(query)
                 .end((err, response) => {
                     response.body.should.have.status(200);
@@ -68,7 +68,7 @@ describe('*** Students API ***', () => [
                 teacher: "teacherken@gmail.com"
             };
             chai.request(app)
-                .get('/commonstudents')
+                .get('/api/commonstudents')
                 .query(query)
                 .end((err, response) => {
                     response.body.should.have.status(200);
