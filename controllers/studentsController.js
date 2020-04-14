@@ -120,8 +120,7 @@ studentsController.getCommonStudentsByTeacherEmails = async function (req, teach
     // check number of teacher emails provided
     if(Array.isArray(teacherEmails) && teacherEmails.length > 1) {
         // get all students given teacher emails
-        let getAllStudents = await studentsModel.getCommonStudentsByTeacherEmails(req, teacherEmails);
-        getCommonStudents = studentsController._checkDuplicateEmails(getAllStudents);
+        getCommonStudents = await studentsModel.getCommonStudentsByTeacherEmails(req, teacherEmails);
     } else {
         // get students from single teacher email
         getCommonStudents = await studentsModel.getCommonStudentsByTeacherEmail(req, teacherEmails);
@@ -129,29 +128,6 @@ studentsController.getCommonStudentsByTeacherEmails = async function (req, teach
     // group student emails
     let commonStudentsList = studentsController._groupCommonStudentsByEmail(getCommonStudents);
     return commonStudentsList;
-}
-
-/**
- * Check and return student emails that have duplicates
- * @param getCommonStudents
- * @returns {Array}
- * @private
- */
-studentsController._checkDuplicateEmails = function (getCommonStudents) {
-    let occurance = {};
-    let duplicates = [];
-    for(let i = 0; i < getCommonStudents.length; i ++) {
-        let getCommonStudent = getCommonStudents[i];
-        let commonStudent = getCommonStudent.student;
-        if(!isEmpty(commonStudent)) {
-            if(!occurance[commonStudent]) {
-                occurance[commonStudent] = commonStudent;
-            } else {
-                duplicates.push(getCommonStudent);
-            }
-        }
-    }
-    return duplicates;
 }
 
 /**

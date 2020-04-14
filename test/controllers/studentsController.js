@@ -211,47 +211,6 @@ describe('*** Students Controller ***', () => {
         });
     });
 
-    describe('Test >>> studentsController._checkDuplicateEmails', () => {
-
-        it('Test with empty array >>> Expect return empty array', () => {
-            const commonStudents = [];
-            let results = studentsController._checkDuplicateEmails(commonStudents);
-            expect(results).to.be.an('array');
-            expect(results).to.be.empty;
-        });
-
-        it('Test with single student object >>> Expect return empty array', () => {
-            const commonStudents = [
-                {student: 'studentrebecca@example.com'},
-                {student: ''},
-            ];
-            let results = studentsController._checkDuplicateEmails(commonStudents);
-            expect(results).to.be.an('array');
-            expect(results).to.be.empty;
-        });
-
-        it('Test with two student objects with no common email >>> Expect return empty array', () => {
-            const commonStudents = [
-                {student: 'studentrebecca@example.com'},
-                {student: 'studentfranka@example.com'},
-            ];
-            let results = studentsController._checkDuplicateEmails(commonStudents);
-            expect(results).to.be.an('array');
-            expect(results).to.be.empty;
-        });
-
-        it('Test with two student objects with one common email >>> Expect return array with length 1', () => {
-            const commonStudents = [
-                {student: 'studentrebecca@example.com'},
-                {student: 'studentrebecca@example.com'},
-                {student: 'studentfranka@example.com'},
-            ];
-            let results = studentsController._checkDuplicateEmails(commonStudents);
-            expect(results).to.be.an('array');
-            expect(results).to.have.length(1);
-        });
-    });
-
     describe('Test >>> studentsController.updateStudentStatus', () => {
 
         it('Test without studentEmail and studentStatus params >>> Expect return error thrown', async () => {
