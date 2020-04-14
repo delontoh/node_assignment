@@ -76,6 +76,7 @@ registrationController.createTeacherStudentsRelation = async function (req, teac
     if(!getIds.studentIds) {
         throw new Error(`${funcName}: missing params 'studentIds'`);
     }
+    let allNewRelations = [];
     // create all teacher and student relation record
     if(Array.isArray(getIds.studentIds) && !isEmpty(getIds.studentIds)) {
         for(let i = 0; i < getIds.studentIds.length; i++) {
@@ -91,13 +92,15 @@ registrationController.createTeacherStudentsRelation = async function (req, teac
             // create record only if there is no existing one
             if(cmpBool(isExistingRelation, false)) {
                 try {
-                    await registrationModel.createTeacherStudentsRelation(req, student_id, teacherId);
+                    let newRelation = await registrationModel.createTeacherStudentsRelation(req, student_id, teacherId);
+                    allNewRelations.push(newRelation);
                 } catch(err) {
                     console.log(`${funcName}: Failed to create relation record (teacher_id: ${teacherId}, student_id: ${student_id})\n Error: ${err}`);
                 }
             }
         }
     }
+    return allNewRelations;
 }
 
 /**

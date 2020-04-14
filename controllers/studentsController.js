@@ -14,6 +14,7 @@ studentsController.addNewStudents = async function (req, studentEmails) {
     if(isEmpty(studentEmails)) {
         throw new Error(`${funcName}: student emails not found`);
     }
+    let allNewStudents = [];
     // check if student record exist
     if(Array.isArray(studentEmails) && studentEmails.length > 0) {
         for(let i = 0; i < studentEmails.length; i++) {
@@ -22,13 +23,15 @@ studentsController.addNewStudents = async function (req, studentEmails) {
             // create student record if no existing record
             if(isEmpty(getStudent)) {
                 try {
-                    await studentsController.addStudentRecord(req, email);
+                    let newStudent = await studentsController.addStudentRecord(req, email);
+                    allNewStudents.push(newStudent);
                 } catch(err) {
                     console.log(`${funcName}: Failed to create new student record (Email: ${email})\n Error: ${err}`);
                 }
             }
         }
     }
+    return allNewStudents;
 }
 
 /**

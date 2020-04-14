@@ -16,21 +16,21 @@ describe('*** Students Controller ***', () => {
             await expect(studentsController.addNewStudents(req, studentEmails)).to.be.rejected;
         });
 
-        it('Test with existing studentEmails >>> Expect return array of undefined', async () => {
+        it('Test with existing studentEmails >>> Expect return empty array', async () => {
             const req = '';
-            const studentEmails = ['student@rebecca@example.com'];
+            const studentEmails = ['studentrebecca@example.com'];
             let result = await studentsController.addNewStudents(req, studentEmails);
             expect(result).to.be.an('array');
-            expect(result).to.include(undefined);
+            expect(result).to.be.empty;
         });
 
-        it('Test with new studentEmails >>> Expect return array of undefined', async () => {
+        it('Test with new studentEmails >>> Expect return array of length 2', async () => {
             const req = '';
             const newId = generateId();
             const studentEmails = [`${newId}.student.com`, `${newId}.newstudent.com`];
             let result = await studentsController.addNewStudents(req, studentEmails);
             expect(result).to.be.an('array');
-            expect(result).to.include(undefined);
+            expect(result).to.have.length(studentEmails.length);
         });
     });
 
