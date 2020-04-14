@@ -92,18 +92,11 @@ studentsModel.getCommonStudentsByTeacherEmail = async function (req, teacherEmai
     if(isEmpty(teacherEmail)) {
         return [];
     }
-    let formatEmails;
-    //Formats emails for query
-    if(Array.isArray(teacherEmail) && teacherEmail.length > 0) {
-        formatEmails =  "'" + teacherEmail.join("','") + "'";
-    } else {
-        formatEmails = "'" + teacherEmail + "'";
-    }
     let records = await db.query(
         `SELECT s.email AS student FROM teacher_student_relation tsr
                 INNER JOIN students s ON tsr.student_fk = s.student_id
                 INNER JOIN teachers t ON tsr.teacher_fk = t.teacher_id
-                WHERE t.email IN (${formatEmails})
+                WHERE t.email IN ('${teacherEmail}')
                 GROUP BY s.email;`,
         { type: QueryTypes.SELECT });
     return records;
