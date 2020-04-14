@@ -20,7 +20,11 @@ teachersController.addNewTeacher = async function (req, teacherEmail) {
         let getTeacher = await teachersController.getTeacherByEmail(req, teacherEmail);
         // create teacher record if it does not exist
         if(isEmpty(getTeacher)) {
-            return await teachersController.addTeacherRecord(req, teacherEmail);
+            try {
+                return await teachersController.addTeacherRecord(req, teacherEmail);
+            } catch(err) {
+                console.log(`${funcName}: Failed to create new teacher record (Email: ${teacherEmail})\n Error: ${err}`);
+            }
         }
     }
 }

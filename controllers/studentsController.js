@@ -16,19 +16,18 @@ studentsController.addNewStudents = async function (req, studentEmails) {
     }
     // check if student record exist
     if(Array.isArray(studentEmails) && studentEmails.length > 0) {
-        let newStudents = studentEmails.map(async (email) => {
+        for(let i = 0; i < studentEmails.length; i++) {
+            let email = studentEmails[i];
             let getStudent = await studentsController.getStudentByEmail(req, email);
             // create student record if no existing record
             if(isEmpty(getStudent)) {
-                await studentsController.addStudentRecord(req, email);
+                try {
+                    await studentsController.addStudentRecord(req, email);
+                } catch(err) {
+                    console.log(`${funcName}: Failed to create new student record (Email: ${email})\n Error: ${err}`);
+                }
             }
-        });
-        let allPromises = await Promise.all(newStudents.map((newStudent) => {
-            newStudent.catch((err) => {
-                console.log(`${funcName}: Failed to create new student record\n Error: ${err}`);
-            })
-        }));
-        return allPromises;
+        }
     }
 }
 
@@ -103,18 +102,55 @@ studentsController.addStudentRecord = async function (req, email) {
 /**
  * Get list of common students by teacher emails
  * @param {*} req
- * @param {array} teacherEmails
+ * @param {*} teacherEmails
  * @returns {Promise<*>}
  */
 studentsController.getCommonStudentsByTeacherEmails = async function (req, teacherEmails) {
     const funcName = 'studentsController.getCommonStudentsByTeacherEmails';
-    if(Array.isArray(teacherEmails) && teacherEmails.length < 1) {
-        throw new Error(`${funcName}: missing params 'teacherEmails`);
+    if(!teacherEmails) {
+        throw new Error(`${funcName}: missing param 'teacherEmails`);
     }
-    let getCommonStudents = await studentsModel.getCommonStudentsByTeacherEmails(req, teacherEmails);
+    if(Array.isArray(teacherEmails) && teacherEmails.length < 1) {
+        throw new Error(`${funcName}: empty param array 'teacherEmails`);
+    }
+    let getCommonStudents;
+    // check number of teacher emails provided
+    if(Array.isArray(teacherEmails) && teacherEmails.length > 1) {
+        // get all students given teacher emails
+        let getAllStudents = await studentsModel.getCommonStudentsByTeacherEmails(req, teacherEmails);
+        getCommonStudents = studentsController._checkDuplicateEmails(getAllStudents);
+    } else {
+        // get students from single teacher email
+        getCommonStudents = await studentsModel.getCommonStudentsByTeacherEmail(req, teacherEmails);
+    }
+    // group student emails
     let commonStudentsList = studentsController._groupCommonStudentsByEmail(getCommonStudents);
     return commonStudentsList;
 }
+
+/**
+ * Check and return student emails that have duplicates
+ * @param getCommonStudents
+ * @returns {Array}
+ * @private
+ */
+studentsController._checkDuplicateEmails = function (getCommonStudents) {
+    let occurance = {};
+    let duplicates = [];
+    for(let i = 0; i < getCommonStudents.length; i ++) {
+        let getCommonStudent = getCommonStudents[i];
+        let commonStudent = getCommonStudent.student;
+        if(!isEmpty(commonStudent)) {
+            if(!occurance[commonStudent]) {
+                occurance[commonStudent] = commonStudent;
+            } else {
+                duplicates.push(getCommonStudent);
+            }
+        }
+    }
+    return duplicates;
+}
+
 /**
  * Sort student emails in array
  * @param {array.<object>} commonStudents

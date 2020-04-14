@@ -5,7 +5,7 @@
 const TEST_DATA = [
     {
         "teacher": "teacherken@gmail.com",
-        "students": ["studenthon@example.com", "studentjon@example.com"]
+        "students": ["studenthon@example.com", "studentjon@example.com", "studentrebecca@example.com"]
     },
     {
         "teacher": "teacherdelontoh@gmail.com",

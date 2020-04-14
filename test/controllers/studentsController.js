@@ -152,6 +152,12 @@ describe('*** Students Controller ***', () => {
             await expect(studentsController.getCommonStudentsByTeacherEmails(req, teacherEmails)).to.be.rejected;
         });
 
+        it('Test with empty teacher emails param >>> Expect return error thrown', async () => {
+            const req = '';
+            const teacherEmails = '';
+            await expect(studentsController.getCommonStudentsByTeacherEmails(req, teacherEmails)).to.be.rejected;
+        });
+
         it('Test with one empty teacher email >>> Expect return object with students property', async () => {
             const req = '';
             const teacherEmails = ['teacherdelontoh@gmail.com', ''];
@@ -202,6 +208,47 @@ describe('*** Students Controller ***', () => {
             expect(results).to.be.an('object');
             expect(results).to.have.property('students');
             expect(results.students).to.have.length(2);
+        });
+    });
+
+    describe('Test >>> studentsController._checkDuplicateEmails', () => {
+
+        it('Test with empty array >>> Expect return empty array', () => {
+            const commonStudents = [];
+            let results = studentsController._checkDuplicateEmails(commonStudents);
+            expect(results).to.be.an('array');
+            expect(results).to.be.empty;
+        });
+
+        it('Test with single student object >>> Expect return empty array', () => {
+            const commonStudents = [
+                {student: 'studentrebecca@example.com'},
+                {student: ''},
+            ];
+            let results = studentsController._checkDuplicateEmails(commonStudents);
+            expect(results).to.be.an('array');
+            expect(results).to.be.empty;
+        });
+
+        it('Test with two student objects with no common email >>> Expect return empty array', () => {
+            const commonStudents = [
+                {student: 'studentrebecca@example.com'},
+                {student: 'studentfranka@example.com'},
+            ];
+            let results = studentsController._checkDuplicateEmails(commonStudents);
+            expect(results).to.be.an('array');
+            expect(results).to.be.empty;
+        });
+
+        it('Test with two student objects with one common email >>> Expect return array with length 1', () => {
+            const commonStudents = [
+                {student: 'studentrebecca@example.com'},
+                {student: 'studentrebecca@example.com'},
+                {student: 'studentfranka@example.com'},
+            ];
+            let results = studentsController._checkDuplicateEmails(commonStudents);
+            expect(results).to.be.an('array');
+            expect(results).to.have.length(1);
         });
     });
 

@@ -51,7 +51,7 @@ studentsModel.getStudentsDataByTeacherEmail = async function (req, email) {
          INNER JOIN students s ON tsr.student_fk = s.student_id
          INNER JOIN teachers t ON tsr.teacher_fk = t.teacher_id
          WHERE t.email IN ('${email}')
-         GROUP BY s.email;`,
+         GROUP BY s.email, s.status;`,
         { type: QueryTypes.SELECT });
     return records;
 }
@@ -72,6 +72,32 @@ studentsModel.getCommonStudentsByTeacherEmails = async function (req, teacherEma
         formatEmails =  "'" + teacherEmails.join("','") + "'";
     } else {
         formatEmails = "'" + teacherEmails + "'";
+    }
+    let records = await db.query(
+        `SELECT s.email AS student FROM teacher_student_relation tsr
+                INNER JOIN students s ON tsr.student_fk = s.student_id
+                INNER JOIN teachers t ON tsr.teacher_fk = t.teacher_id
+                WHERE t.email IN (${formatEmails});`,
+        { type: QueryTypes.SELECT });
+    return records;
+}
+
+/**
+ * Get list of common students by single teacher email
+ * @param {*} req
+ * @param {array} teacherEmail
+ * @returns {Promise<*>}
+ */
+studentsModel.getCommonStudentsByTeacherEmail = async function (req, teacherEmail) {
+    if(isEmpty(teacherEmail)) {
+        return [];
+    }
+    let formatEmails;
+    //Formats emails for query
+    if(Array.isArray(teacherEmail) && teacherEmail.length > 0) {
+        formatEmails =  "'" + teacherEmail.join("','") + "'";
+    } else {
+        formatEmails = "'" + teacherEmail + "'";
     }
     let records = await db.query(
         `SELECT s.email AS student FROM teacher_student_relation tsr
